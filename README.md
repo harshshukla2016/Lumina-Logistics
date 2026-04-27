@@ -10,27 +10,48 @@ Built for the **Solution Challenge 2026**, this prototype demonstrates how real-
 
 ---
 
-## ✨ Core Features
+## ✨ Core Modules Detail
 
 ### 🧠 Predictive Intelligence
 Deep learning models analyze global throughput probability to forecast corridor congestion before it impacts your fleet.
-*   **850 TOPs Neural Throughput**
-*   **99.2% Prediction Accuracy**
-*   **Real-time Probability Mesh Visualization**
+*   **850 TOPs Neural Throughput**: Processing massive datasets from global port APIs in real-time.
+*   **99.2% Prediction Accuracy**: High-fidelity forecasting using historical transit and weather data.
+*   **Real-time Probability Mesh**: Visual representation of "throughput waves" across major shipping lanes.
 
 ![Intelligence Dashboard](./public/docs/images/intelligence.png)
 
 ### 🌍 Global Network Monitoring
 A cinematic 3D globe visualization providing real-time telemetry for every vessel, port, and transit hub in your network.
-*   **Node Integrity Tracking**: Monitor health and compliance of global hubs.
-*   **Live Transit Routes**: Dynamic data lines showing current vessel positioning and speed.
+*   **Node Integrity Tracking**: Real-time health monitoring of physical hubs and digital infrastructure.
+*   **Dynamic Data Lines**: Visualizing the density of maritime and aerial traffic across specific corridors.
+*   **Instant Telemetry**: Click-to-inspect any node for detailed status, compliance, and ETA data.
 
 ![Global Network](./public/docs/images/network.png)
 
 ### ⚠️ Disruption Detection & Smart Rerouting
 Automated risk analysis that identifies anomalies (weather, political, technical) and proposes AI-optimized reroute plans.
-*   **Autonomous Decision Log**: See every action taken by the AI in real-time.
-*   **One-Click Optimization**: Deploy complex fleet-wide changes with a single command.
+*   **Autonomous Decision Log**: Full transparency into AI-driven rerouting decisions with timestamped justifications.
+*   **Risk Thresholding**: User-configurable sensitivity for automated vs. manual intervention.
+*   **Impact Simulation**: Instantly view the predicted time/cost savings of a proposed reroute before deployment.
+
+---
+
+## 🚀 Future Roadmap
+
+### 🧱 Phase 1: Immutable Supply Chain (Blockchain)
+Integrate an Ethereum-based layer for immutable transit logs, automated smart contracts for port fees, and transparent compliance auditing.
+
+### 📡 Phase 2: Hyper-Local IoT Integration
+Deploying direct sensor mesh integration into cargo containers. Monitor humidity, shock, and precise internal temperature via satellite-linked IoT nodes.
+
+### ⚛️ Phase 3: Quantum Optimization
+Implement quantum-annealing algorithms to solve the "Traveling Salesman" problem at a global scale, optimizing routes for thousands of vessels simultaneously.
+
+### 🚁 Phase 4: Last-Mile Autonomous Egress
+Expand the command center to include autonomous drone and land-vehicle fleet management for regional hub-to-door delivery.
+
+### 🌿 Phase 5: Sustainability Matrix
+Automated carbon footprint tracking per vessel with integrated carbon-credit purchasing to ensure every shipment is carbon-neutral by default.
 
 ---
 
