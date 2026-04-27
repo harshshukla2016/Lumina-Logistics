@@ -10,6 +10,7 @@ const Navbar = ({ activeSection, setActiveSection, triggerOptimization }) => {
     { label: 'Network', id: 'network' },
     { label: 'Disruption', id: 'disruption' },
     { label: 'Solutions', id: 'solutions' },
+    { label: 'Next Gen', id: 'future' },
   ];
 
   const notifications = [

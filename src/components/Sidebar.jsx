@@ -7,6 +7,7 @@ const Sidebar = ({ activeSection, setActiveSection, triggerOptimization, isColla
     { icon: 'public', label: 'Global Routes', id: 'network' },
     { icon: 'warning', label: 'Risk Analysis', id: 'disruption' },
     { icon: 'auto_awesome', label: 'Optimization', id: 'solutions' },
+    { icon: 'biotech', label: 'Next Gen', id: 'future' },
   ];
 
   return (

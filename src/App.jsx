@@ -6,6 +6,7 @@ import GlobalNetwork from './components/GlobalNetwork';
 import DisruptionDetection from './components/DisruptionDetection';
 import Intelligence from './components/Intelligence';
 import Solutions from './components/Solutions';
+import FutureSystems from './components/FutureSystems';
 import { AnimatePresence, motion } from 'framer-motion';
 
 function App() {
@@ -95,8 +96,23 @@ function App() {
             />
           </div>
         );
+      case 'future':
+        return (
+          <div key="future" className="flex min-h-screen">
+            <Sidebar 
+              activeSection={activeSection} 
+              setActiveSection={setActiveSection} 
+              triggerOptimization={triggerOptimization}
+              isCollapsed={isSidebarCollapsed}
+              toggleSidebar={toggleSidebar}
+              setShowSettings={setShowSettings}
+              setShowSupport={setShowSupport}
+            />
+            <FutureSystems isCollapsed={isSidebarCollapsed} />
+          </div>
+        );
       default:
-        return <Hero key="default" />;
+        return <Hero key="hero" setActiveSection={setActiveSection} />;
     }
   };
 
