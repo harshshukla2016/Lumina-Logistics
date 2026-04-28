@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { GoogleGenAI } from '@google/genai';
 
-const GeminiAssistant = () => {
+const GeminiAssistant = ({ triggerOptimization, setActiveSection, setShowSettings, setShowSupport }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedModel, setSelectedModel] = useState('gemini');
   const [apiKey, setApiKey] = useState(localStorage.getItem('gemini_api_key') || '');
@@ -11,27 +11,36 @@ const GeminiAssistant = () => {
     { role: 'assistant', content: 'Hello, Commander. I am Lumina AI Core. Please select your preferred AI engine above. How can I assist with your supply chain logistics today?' }
   ]);
 
+  const coreActionInstructions = `
+You have direct integration with the Lumina Logistics UI. Do not ask the user for specific data to optimize. Instead, take immediate action using the following tags anywhere in your response:
+- [ACTION: OPTIMIZE] -> Triggers global fleet optimization and navigates to Solutions.
+- [ACTION: NETWORK] -> Navigates to the Global Network map.
+- [ACTION: DISRUPTION] -> Navigates to Disruption Detection.
+- [ACTION: FUTURE] -> Navigates to Next Gen Systems.
+- [ACTION: SETTINGS] -> Opens the app Settings modal.
+If the user asks you to "optimize the logistics", simply say "Initiating global fleet optimization sequence based on real-time anomaly data." and include [ACTION: OPTIMIZE]. Use your simulated access to immediately fulfill requests without asking for manual data entry.`;
+
   const aiModels = {
     gemini: { 
       name: 'Gemini 1.5 Pro', 
       subtitle: 'General Logistics Intelligence', 
       icon: 'smart_toy', 
       color: 'bg-blue-500',
-      prompt: "You are Lumina AI powered by Gemini 1.5 Pro. You act as a general logistics and supply chain assistant. Be concise, professional, and slightly futuristic."
+      prompt: "You are Lumina AI powered by Gemini 1.5 Pro. You act as a general logistics and supply chain assistant. Be concise, professional, and slightly futuristic." + coreActionInstructions
     },
     vertex: { 
       name: 'Vertex AI Core', 
       subtitle: 'Advanced Predictive Analytics', 
       icon: 'analytics', 
       color: 'bg-indigo-500',
-      prompt: "You are Vertex AI Logistics Core. You specialize in deep predictive analytics, mathematical optimization, and risk modeling for global supply chains. Use highly analytical, data-driven language."
+      prompt: "You are Vertex AI Logistics Core. You specialize in deep predictive analytics, mathematical optimization, and risk modeling for global supply chains. Use highly analytical, data-driven language." + coreActionInstructions
     },
     cloud: { 
       name: 'Google Cloud Vision', 
       subtitle: 'Satellite & Node Telemetry', 
       icon: 'satellite_alt', 
       color: 'bg-teal-500',
-      prompt: "You are Google Cloud Vision AI. You specialize in analyzing satellite imagery, port infrastructure health, and real-time visual telemetry of the logistics network. Focus on physical node status and environmental factors."
+      prompt: "You are Google Cloud Vision AI. You specialize in analyzing satellite imagery, port infrastructure health, and real-time visual telemetry of the logistics network. Focus on physical node status and environmental factors." + coreActionInstructions
     }
   };
   const [input, setInput] = useState('');
@@ -84,7 +93,27 @@ const GeminiAssistant = () => {
         }
       });
       
-      const responseText = response.text;
+      let responseText = response.text;
+      
+      // Execute UI actions based on AI tags
+      if (responseText.includes('[ACTION: OPTIMIZE]')) {
+        if (triggerOptimization) triggerOptimization();
+      }
+      if (responseText.includes('[ACTION: NETWORK]')) {
+        if (setActiveSection) setActiveSection('network');
+      }
+      if (responseText.includes('[ACTION: DISRUPTION]')) {
+        if (setActiveSection) setActiveSection('disruptions');
+      }
+      if (responseText.includes('[ACTION: FUTURE]')) {
+        if (setActiveSection) setActiveSection('future');
+      }
+      if (responseText.includes('[ACTION: SETTINGS]')) {
+        if (setShowSettings) setShowSettings(true);
+      }
+
+      // Remove tags from the displayed text
+      responseText = responseText.replace(/\[ACTION: [A-Z]+\]/g, '').trim();
       
       setMessages(prev => [...prev, { role: 'assistant', content: responseText }]);
     } catch (error) {

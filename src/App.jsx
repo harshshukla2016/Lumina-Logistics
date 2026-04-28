@@ -199,7 +199,12 @@ function App() {
       </AnimatePresence>
 
       {/* Floating Gemini Assistant */}
-      <GeminiAssistant />
+      <GeminiAssistant 
+        triggerOptimization={triggerOptimization}
+        setActiveSection={setActiveSection}
+        setShowSettings={setShowSettings}
+        setShowSupport={setShowSupport}
+      />
 
       {/* Footer */}
       <footer className="w-full border-t border-white/20 bg-slate-50/50 dark:bg-slate-950/50 backdrop-blur-md flex flex-col md:flex-row justify-between items-center px-16 py-8 gap-4 mt-auto z-50 relative">
