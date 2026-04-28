@@ -4,11 +4,36 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 
 const GeminiAssistant = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [selectedModel, setSelectedModel] = useState('gemini');
   const [apiKey, setApiKey] = useState(localStorage.getItem('gemini_api_key') || '');
   const [isKeyValid, setIsKeyValid] = useState(!!localStorage.getItem('gemini_api_key'));
   const [messages, setMessages] = useState([
-    { role: 'assistant', content: 'Hello, Commander. I am Lumina AI, powered by Google Gemini. How can I assist with your supply chain logistics today?' }
+    { role: 'assistant', content: 'Hello, Commander. I am Lumina AI Core. Please select your preferred AI engine above. How can I assist with your supply chain logistics today?' }
   ]);
+
+  const aiModels = {
+    gemini: { 
+      name: 'Gemini 1.5 Pro', 
+      subtitle: 'General Logistics Intelligence', 
+      icon: 'auto_spark', 
+      color: 'bg-blue-500',
+      prompt: "You are Lumina AI powered by Gemini 1.5 Pro. You act as a general logistics and supply chain assistant. Be concise, professional, and slightly futuristic."
+    },
+    vertex: { 
+      name: 'Vertex AI Core', 
+      subtitle: 'Advanced Predictive Analytics', 
+      icon: 'analytics', 
+      color: 'bg-indigo-500',
+      prompt: "You are Vertex AI Logistics Core. You specialize in deep predictive analytics, mathematical optimization, and risk modeling for global supply chains. Use highly analytical, data-driven language."
+    },
+    cloud: { 
+      name: 'Google Cloud Vision', 
+      subtitle: 'Satellite & Node Telemetry', 
+      icon: 'satellite_alt', 
+      color: 'bg-teal-500',
+      prompt: "You are Google Cloud Vision AI. You specialize in analyzing satellite imagery, port infrastructure health, and real-time visual telemetry of the logistics network. Focus on physical node status and environmental factors."
+    }
+  };
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef(null);
@@ -41,7 +66,7 @@ const GeminiAssistant = () => {
       const genAI = new GoogleGenerativeAI(apiKey);
       const model = genAI.getGenerativeModel({ 
         model: "gemini-1.5-pro",
-        systemInstruction: "You are Lumina AI, an advanced logistics and supply chain assistant. You help the user (Commander) manage a global fleet of vessels, detect disruptions, optimize routes, and analyze telemetry data. Be concise, professional, and slightly futuristic in tone."
+        systemInstruction: aiModels[selectedModel].prompt
       });
 
       const history = messages.slice(1).map(msg => ({
@@ -91,14 +116,24 @@ const GeminiAssistant = () => {
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             className="fixed bottom-28 right-8 w-96 h-[500px] glass-card rounded-3xl border border-white/20 shadow-3xl z-[100] flex flex-col overflow-hidden"
           >
-            <div className="bg-gradient-to-r from-blue-600/20 to-sky-500/20 p-4 border-b border-white/10 flex justify-between items-center backdrop-blur-md">
+            <div className={`bg-gradient-to-r from-${aiModels[selectedModel].color.split('-')[1]}-600/20 to-slate-800/50 p-4 border-b border-white/10 flex justify-between items-center backdrop-blur-md transition-colors`}>
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white">
-                  <span className="material-symbols-outlined text-lg">auto_spark</span>
+                <div className={`w-8 h-8 rounded-full ${aiModels[selectedModel].color} flex items-center justify-center text-white transition-colors`}>
+                  <span className="material-symbols-outlined text-lg">{aiModels[selectedModel].icon}</span>
                 </div>
                 <div>
-                  <h3 className="font-black text-slate-800 dark:text-white leading-none">Lumina AI</h3>
-                  <p className="text-[10px] font-bold text-sky-500 uppercase tracking-widest mt-1">Powered by Google Gemini</p>
+                  <select 
+                    value={selectedModel}
+                    onChange={(e) => setSelectedModel(e.target.value)}
+                    className="bg-transparent font-black text-slate-800 dark:text-white leading-none appearance-none cursor-pointer focus:outline-none hover:text-sky-500 transition-colors"
+                  >
+                    <option value="gemini">Gemini 1.5 Pro</option>
+                    <option value="vertex">Vertex AI</option>
+                    <option value="cloud">Google Cloud AI</option>
+                  </select>
+                  <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-1">
+                    {aiModels[selectedModel].subtitle}
+                  </p>
                 </div>
               </div>
               <button onClick={() => setIsOpen(false)} className="text-slate-400 hover:text-slate-800 dark:hover:text-white transition-colors">
