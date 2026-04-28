@@ -95,7 +95,7 @@ Lumina is engineered for performance and visual excellence:
 ---
 
 ## 👥 Team
-Developed by **[Your Team Name]** for the 2026 Solution Challenge.
+Developed by **[Coco]** for the 2026 Solution Challenge.
 
 ---
 

@@ -7,6 +7,7 @@ import DisruptionDetection from './components/DisruptionDetection';
 import Intelligence from './components/Intelligence';
 import Solutions from './components/Solutions';
 import FutureSystems from './components/FutureSystems';
+import GeminiAssistant from './components/GeminiAssistant';
 import { AnimatePresence, motion } from 'framer-motion';
 
 function App() {
@@ -196,6 +197,9 @@ function App() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Floating Gemini Assistant */}
+      <GeminiAssistant />
 
       {/* Footer */}
       <footer className="w-full border-t border-white/20 bg-slate-50/50 dark:bg-slate-950/50 backdrop-blur-md flex flex-col md:flex-row justify-between items-center px-16 py-8 gap-4 mt-auto z-50 relative">
