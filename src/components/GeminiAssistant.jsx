@@ -77,7 +77,7 @@ const GeminiAssistant = () => {
       });
 
       const response = await ai.models.generateContent({
-        model: "gemini-3-flash-preview",
+        model: "gemini-1.5-pro",
         contents: formattedHistory,
         config: {
           systemInstruction: aiModels[selectedModel].prompt
