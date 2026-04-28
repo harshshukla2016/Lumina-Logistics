@@ -15,7 +15,7 @@ const GeminiAssistant = () => {
     gemini: { 
       name: 'Gemini 1.5 Pro', 
       subtitle: 'General Logistics Intelligence', 
-      icon: 'auto_spark', 
+      icon: 'smart_toy', 
       color: 'bg-blue-500',
       prompt: "You are Lumina AI powered by Gemini 1.5 Pro. You act as a general logistics and supply chain assistant. Be concise, professional, and slightly futuristic."
     },
@@ -103,13 +103,13 @@ const GeminiAssistant = () => {
     <>
       <div className="fixed bottom-8 right-8 z-[100]">
         <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
           onClick={() => setIsOpen(!isOpen)}
-          className="w-14 h-14 rounded-full bg-gradient-to-r from-blue-600 to-sky-500 shadow-2xl shadow-sky-500/30 flex items-center justify-center text-white relative group"
+          className="w-12 h-12 rounded-full bg-gradient-to-r from-blue-600 to-sky-500 shadow-2xl shadow-sky-500/30 flex items-center justify-center text-white relative group border border-white/20"
         >
-          <span className="material-symbols-outlined text-3xl">auto_spark</span>
-          <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full border-2 border-white dark:border-slate-900 animate-pulse"></span>
+          <span className="material-symbols-outlined text-2xl group-hover:animate-pulse">smart_toy</span>
+          <span className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-red-500 rounded-full border-2 border-white dark:border-slate-900 animate-pulse"></span>
         </motion.button>
       </div>
 

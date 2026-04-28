@@ -1,7 +1,32 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { GoogleGenAI } from '@google/genai';
 
 const GlobalNetwork = ({ isCollapsed }) => {
+  const [networkInsight, setNetworkInsight] = useState("Minor weather disruption detected in North Atlantic corridor. AI has pre-routed 14 vessels to maintain delivery schedules.");
+  const [isLoadingInsight, setIsLoadingInsight] = useState(false);
+
+  useEffect(() => {
+    const fetchInsight = async () => {
+      const apiKey = localStorage.getItem('gemini_api_key');
+      if (!apiKey) return;
+      
+      setIsLoadingInsight(true);
+      try {
+        const ai = new GoogleGenAI({ apiKey: apiKey });
+        const response = await ai.models.generateContent({
+          model: "gemini-1.5-pro",
+          contents: "You are Lumina AI Global Network Monitor. Generate a 2-sentence highly technical predictive insight regarding a global shipping network anomaly and the preemptive routing adjustments taken to maintain schedule. Mention specific global corridors and exact vessel counts.",
+        });
+        setNetworkInsight(response.text);
+      } catch (err) {
+        console.error("AI Insight Error:", err);
+      } finally {
+        setIsLoadingInsight(false);
+      }
+    };
+    fetchInsight();
+  }, []);
   const stats = [
     { label: 'Active Vessels', value: '1,248', color: 'text-primary' },
     { label: 'Global Efficiency', value: '98.4%', color: 'text-secondary' },
@@ -87,8 +112,15 @@ const GlobalNetwork = ({ isCollapsed }) => {
               <span className="material-symbols-outlined text-tertiary text-3xl">model_training</span>
               <div>
                 <h4 className="font-label-bold text-on-surface font-semibold">Predictive Insight</h4>
-                <p className="font-body-md text-sm text-on-surface-variant mt-2">
-                  Minor weather disruption detected in North Atlantic corridor. AI has pre-routed 14 vessels to maintain delivery schedules.
+                <p className="font-body-md text-sm text-on-surface-variant mt-2 leading-relaxed">
+                  {isLoadingInsight ? (
+                    <span className="flex items-center gap-2 animate-pulse text-outline">
+                      <span className="material-symbols-outlined text-sm spin">sync</span>
+                      Scanning global nodes...
+                    </span>
+                  ) : (
+                    networkInsight
+                  )}
                 </p>
                 <button className="mt-4 text-primary font-bold text-sm hover:underline flex items-center gap-1">
                   View Reroute Plan <span className="material-symbols-outlined text-sm">arrow_forward</span>

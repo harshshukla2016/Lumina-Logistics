@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { GoogleGenAI } from '@google/genai';
 
 const Solutions = ({ isOptimizing, setIsOptimizing, isCollapsed }) => {
   const [isComplete, setIsComplete] = useState(false);
+  const [aiReport, setAiReport] = useState("Awaiting optimization sequence...");
 
   const activeSolutions = [
     { id: 'S-204', type: 'Fleet Optimization', status: 'Running', impact: '+15% efficiency', icon: 'auto_awesome' },
@@ -10,20 +12,38 @@ const Solutions = ({ isOptimizing, setIsOptimizing, isCollapsed }) => {
     { id: 'S-442', type: 'Temperature Guardian', status: 'Active', impact: 'Zero loss', icon: 'thermostat' },
   ];
 
-  const handleOptimize = () => {
+  const handleOptimize = async () => {
     setIsOptimizing(true);
-  };
+    setIsComplete(false);
 
-  useEffect(() => {
-    if (isOptimizing) {
-      setIsComplete(false);
-      const timer = setTimeout(() => {
+    const apiKey = localStorage.getItem('gemini_api_key');
+    if (!apiKey) {
+      // Fallback to simulation if no API key
+      setTimeout(() => {
+        setIsOptimizing(false);
         setIsComplete(true);
-        setTimeout(() => setIsComplete(false), 3000);
+        setAiReport("Simulated Optimization: Rerouting Vessel L-402 via the Cape of Good Hope to avoid Suez congestion. Estimated savings: $1.2M.");
+        setTimeout(() => setIsComplete(false), 5000);
       }, 3000);
-      return () => clearTimeout(timer);
+      return;
     }
-  }, [isOptimizing]);
+
+    try {
+      const ai = new GoogleGenAI({ apiKey: apiKey });
+      const response = await ai.models.generateContent({
+        model: "gemini-1.5-pro",
+        contents: "You are Lumina AI's core optimizer. Generate a short 2-sentence highly technical logistics optimization plan to avoid a current disruption anomaly (e.g., port strike, storm, canal blockage). Mention specific vessel names, routes, and estimated cost savings in millions. Be concise.",
+      });
+      setAiReport(response.text);
+    } catch (err) {
+      console.error(err);
+      setAiReport(`Neural Optimizer failed: ${err.message}. Please verify your API key in the Copilot.`);
+    } finally {
+      setIsOptimizing(false);
+      setIsComplete(true);
+      setTimeout(() => setIsComplete(false), 5000);
+    }
+  };
 
   return (
     <div className={`flex-1 pt-24 p-8 min-h-screen transition-all duration-300 ${isCollapsed ? 'lg:pl-32' : 'lg:pl-80'}`}>
@@ -110,9 +130,20 @@ const Solutions = ({ isOptimizing, setIsOptimizing, isCollapsed }) => {
           </div>
 
           <div className="glass-card p-8 rounded-[2rem] border border-white/40">
-            <h4 className="text-xs font-black text-outline uppercase tracking-[0.3em] mb-4">Network Savings</h4>
-            <div className="text-4xl font-black text-primary mb-2">$2.4M</div>
-            <p className="text-[10px] font-bold text-secondary uppercase tracking-widest">Efficiency GAIN: 14.8%</p>
+            <h4 className="text-xs font-black text-outline uppercase tracking-[0.3em] mb-4 flex items-center gap-2">
+              <span className="material-symbols-outlined text-primary text-sm">auto_spark</span>
+              AI Live Optimization Report
+            </h4>
+            <div className="p-4 bg-primary/10 border border-primary/20 rounded-2xl">
+              <p className="text-sm font-bold text-on-surface leading-relaxed">
+                {aiReport}
+              </p>
+            </div>
+            <div className="mt-6">
+              <h4 className="text-[10px] font-black text-outline uppercase tracking-[0.3em] mb-2">Network Savings</h4>
+              <div className="text-4xl font-black text-primary mb-2">$2.4M</div>
+              <p className="text-[10px] font-bold text-secondary uppercase tracking-widest">Efficiency GAIN: 14.8%</p>
+            </div>
           </div>
         </div>
       </div>

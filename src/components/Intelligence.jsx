@@ -1,7 +1,40 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { GoogleGenAI } from '@google/genai';
 
 const Intelligence = ({ isCollapsed }) => {
+  const [logs, setLogs] = useState([
+    'Optimized North Atlantic route for Vessel L-402',
+    'Predicted 15% surge in Pacific corridor throughput',
+    'Synchronized temperature sensors for Unit 819',
+  ]);
+  const [isLoadingLogs, setIsLoadingLogs] = useState(false);
+
+  useEffect(() => {
+    const fetchLogs = async () => {
+      const apiKey = localStorage.getItem('gemini_api_key');
+      if (!apiKey) return;
+      
+      setIsLoadingLogs(true);
+      try {
+        const ai = new GoogleGenAI({ apiKey: apiKey });
+        const response = await ai.models.generateContent({
+          model: "gemini-1.5-pro",
+          contents: "You are Lumina AI. Generate exactly 3 highly technical, short, one-sentence decision logs regarding supply chain optimization, route prediction, and node synchronization. Format them as a simple text list separated by the pipe character '|'. Do not include numbers or bullet points.",
+        });
+        
+        const newLogs = response.text.split('|').map(log => log.trim()).filter(log => log.length > 0).slice(0, 3);
+        if (newLogs.length > 0) {
+          setLogs(newLogs);
+        }
+      } catch (err) {
+        console.error("AI Log Error:", err);
+      } finally {
+        setIsLoadingLogs(false);
+      }
+    };
+    fetchLogs();
+  }, []);
   const metrics = [
     { label: 'Neural Throughput', value: '850 TOPs', trend: '+12%' },
     { label: 'Prediction Accuracy', value: '99.2%', trend: '+0.4%' },
@@ -60,16 +93,19 @@ const Intelligence = ({ isCollapsed }) => {
             <h3 className="text-xl font-bold uppercase tracking-tighter">AI Core Decision Log</h3>
           </div>
           <div className="space-y-6">
-            {[
-              'Optimized North Atlantic route for Vessel L-402',
-              'Predicted 15% surge in Pacific corridor throughput',
-              'Synchronized temperature sensors for Unit 819',
-            ].map((log, i) => (
-              <div key={i} className="flex gap-4">
-                <div className="w-1 h-1 rounded-full bg-primary mt-2"></div>
-                <p className="text-sm text-on-surface-variant leading-relaxed">{log}</p>
+            {isLoadingLogs ? (
+              <div className="flex items-center gap-4 text-sm text-outline animate-pulse">
+                <span className="material-symbols-outlined text-primary spin">sync</span>
+                Retrieving Live Neural Logs...
               </div>
-            ))}
+            ) : (
+              logs.map((log, i) => (
+                <div key={i} className="flex gap-4">
+                  <div className="w-1 h-1 rounded-full bg-primary mt-2 flex-shrink-0"></div>
+                  <p className="text-sm text-on-surface-variant leading-relaxed">{log}</p>
+                </div>
+              ))
+            )}
           </div>
           <button className="mt-8 text-primary font-black text-xs uppercase tracking-[0.2em] flex items-center gap-2 group">
             Access Full Neural Log

@@ -1,7 +1,32 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { GoogleGenAI } from '@google/genai';
 
 const DisruptionDetection = ({ isCollapsed }) => {
+  const [aiInsight, setAiInsight] = useState("Rerouting prevented a potential temperature compliance breach for Unit 819. Efficiency metrics updated globally.");
+  const [isLoadingInsight, setIsLoadingInsight] = useState(false);
+
+  useEffect(() => {
+    const fetchInsight = async () => {
+      const apiKey = localStorage.getItem('gemini_api_key');
+      if (!apiKey) return;
+      
+      setIsLoadingInsight(true);
+      try {
+        const ai = new GoogleGenAI({ apiKey: apiKey });
+        const response = await ai.models.generateContent({
+          model: "gemini-1.5-pro",
+          contents: "You are Lumina AI. Generate a 1-sentence highly technical AI insight regarding a recent severe weather disruption and the successful rerouting of a cargo unit carrying pharmaceuticals. Mention temperature compliance.",
+        });
+        setAiInsight(response.text);
+      } catch (err) {
+        console.error("AI Insight Error:", err);
+      } finally {
+        setIsLoadingInsight(false);
+      }
+    };
+    fetchInsight();
+  }, []);
   return (
     <main className={`transition-all duration-300 pt-24 min-h-screen p-8 flex flex-col gap-8 max-w-screen-2xl mx-auto ${isCollapsed ? 'lg:ml-32' : 'lg:ml-64'}`}>
       <header>
@@ -134,7 +159,14 @@ const DisruptionDetection = ({ isCollapsed }) => {
               <h3 className="text-sm font-bold text-tertiary uppercase tracking-wider">Lumina AI Insight</h3>
             </div>
             <p className="text-sm text-on-surface mb-4 leading-relaxed">
-              Rerouting prevented a potential temperature compliance breach for Unit 819. Efficiency metrics updated globally.
+              {isLoadingInsight ? (
+                <span className="flex items-center gap-2 animate-pulse text-outline">
+                  <span className="material-symbols-outlined text-sm spin">sync</span>
+                  Analyzing disruption impact...
+                </span>
+              ) : (
+                aiInsight
+              )}
             </p>
             <button className="text-tertiary font-bold text-sm flex items-center gap-1 hover:underline">
               View Full Report
