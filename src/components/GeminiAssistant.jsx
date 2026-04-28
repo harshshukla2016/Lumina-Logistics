@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { GoogleGenAI } from '@google/genai';
 
 const GeminiAssistant = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -63,23 +63,28 @@ const GeminiAssistant = () => {
     setIsLoading(true);
 
     try {
-      const genAI = new GoogleGenerativeAI(apiKey);
-      const model = genAI.getGenerativeModel({ 
-        model: "gemini-1.5-pro",
-        systemInstruction: aiModels[selectedModel].prompt
-      });
+      const ai = new GoogleGenAI({ apiKey: apiKey });
 
-      const history = messages.slice(1).map(msg => ({
+      const formattedHistory = messages.slice(1).map(msg => ({
         role: msg.role === 'assistant' ? 'model' : 'user',
         parts: [{ text: msg.content }]
       }));
-
-      const chat = model.startChat({
-        history: history,
+      
+      // Append the new user message to the history
+      formattedHistory.push({
+        role: 'user',
+        parts: [{ text: userMessage }]
       });
 
-      const result = await chat.sendMessage(userMessage);
-      const responseText = result.response.text();
+      const response = await ai.models.generateContent({
+        model: "gemini-3-flash-preview",
+        contents: formattedHistory,
+        config: {
+          systemInstruction: aiModels[selectedModel].prompt
+        }
+      });
+      
+      const responseText = response.text;
       
       setMessages(prev => [...prev, { role: 'assistant', content: responseText }]);
     } catch (error) {
